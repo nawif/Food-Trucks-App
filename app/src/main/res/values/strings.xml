@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">حاسبة البلوت</string>
+    <string name="game_over1">انتهت الصكة ! تبينا نجلدهم بصكة جديدة؟</string>
+    <string name="yes">قدام</string>
+    <string name="game_over2">إنتهت الصكة ! نبدأ بصكة جديدة؟</string>
+    <string name="back">تراجع</string>
+    <string name="screen">الشاشة دائما مستيقظة</string>
+    <string name="new_game">صكة جديدة</string>
+    <string name="new_game_msg">هل تريد بدأ صكة جديدة؟</string>
+</resources>
