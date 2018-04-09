@@ -2,6 +2,7 @@ package com.mhssn.balootcalc;
 
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,6 +26,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.LinkedHashSet;
+import java.util.Random;
 import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -50,105 +53,57 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        arrow = (ImageView) findViewById(R.id.arrow);
-
-        timer = (TextView) findViewById(R.id.timer);
-        Timer mTimer = new Timer();
-        mTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (second % 59 == 0 && second != 0) {
-                    second = 0;
-                    minute++;
-                } else {
-                    second++;
-                }
-
-                String mSecond = second + "";
-                String mMinute = minute + "";
-                if (mSecond.length() == 1) {
-                    mSecond = "0" + mSecond;
-                }
-
-                if (mMinute.length() == 1) {
-                    mMinute = "0" + mMinute;
-                }
-                final String finalMMinute = mMinute;
-                final String finalMSecond = mSecond;
-                timer.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        timer.setText(finalMMinute + ":" + finalMSecond);
-                    }
-                });
-            }
-        }, 1000, 1000);
-
-        us = (EditText) findViewById(R.id.us);
-        them = (EditText) findViewById(R.id.them);
-
-        register = (Button) findViewById(R.id.register);
-        reg1 = (TextView) findViewById(R.id.reg1);
-        reg2 = (TextView) findViewById(R.id.reg2);
-
+        initializeViews();
         stackT1 = new Stack<>();
         stackT2 = new Stack<>();
 
-        more = (ImageButton) findViewById(R.id.more);
+        setTimer(timer);
+
         final PopupMenu popupMenu = new PopupMenu(this,more);
         popupMenu.getMenuInflater().inflate(R.menu.home_menu,popupMenu.getMenu());
-
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 int id = menuItem.getItemId();
-                if(id == R.id.newGame){
-                    AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
-                    alert.setMessage(R.string.new_game_msg);
-                    alert.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            newGame();
+                switch (id){
+                    case (R.id.newGame):
+                        AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+                        alert.setMessage(R.string.new_game_msg);
+                        alert.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                newGame();
+                            }
+                        });
+                        alert.show();
+                        break;
+                    case (R.id.back):
+                        ScoreBack();
+                        break;
+                    case (R.id.screen):
+                        menuItem.setChecked(!menuItem.isChecked());
+                        if(menuItem.isChecked()){
+                            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                         }
-                    });
-                    alert.show();
-                }
-                else if(id == R.id.back){
-                    if(stackT1.isEmpty())
+                        else{
+                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                        }
+                        break;
+                    case (R.id.randomizer):
+                        Thread thread=new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.d("test","hello");
+                                Integer[] randomImgNum=fourRandomNumbers();
+                                Log.d("Checking_Random_Numbers",randomImgNum[0]+" "+randomImgNum[1]+ " "+randomImgNum[2]+" "+randomImgNum[3]);
+                            }
+                        });
+                        thread.start();
+                        break;
+                    default:
                         return false;
-                    stackT1.pop();
-                    stackT2.pop();
-                    if(!stackT1.isEmpty()) {
-                        team1 = stackT1.peek();
-                        team2 = stackT2.peek();
-                    }
-                    else {
-                        team1 = 0;
-                        team2 = 0;
-                    }
-                    sUs.setText(team1+"");
-                    sThem.setText(team2+"");
-                    int lastIndex1 = reg1.getText().toString().lastIndexOf('\n');
-                    int lastIndex2 = reg2.getText().toString().lastIndexOf('\n');
-                    if(lastIndex1==-1){
-                        reg1.setText("");
-                        reg2.setText("");
-                        return false;
-                    }
-                    reg1.setText(reg1.getText().toString().substring(0,lastIndex1));
-                    reg2.setText(reg2.getText().toString().substring(0,lastIndex2));
                 }
-                else if (id == R.id.screen){
-                    menuItem.setChecked(!menuItem.isChecked());
-                    if(menuItem.isChecked()){
-                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                    }
-                    else{
-                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                    }
-                }
-                return false;
+                return true;
             }
         });
 
@@ -195,6 +150,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void initializeViews() {
+        arrow = (ImageView) findViewById(R.id.arrow);
+        timer = (TextView) findViewById(R.id.timer);
+
+        us = (EditText) findViewById(R.id.us);
+        them = (EditText) findViewById(R.id.them);
+
+        register = (Button) findViewById(R.id.register);
+        reg1 = (TextView) findViewById(R.id.reg1);
+        reg2 = (TextView) findViewById(R.id.reg2);
+
+
+        more = (ImageButton) findViewById(R.id.more);
+    }
+
     public void turnOn(View view) {
         arrow.animate().rotation(arrowRotation -= 90);
     }
@@ -202,6 +172,10 @@ public class MainActivity extends AppCompatActivity {
     public void register(View view) {
         team1 += Integer.parseInt(us.getText().toString().equals("")?"0":us.getText().toString());
         team2 += Integer.parseInt(them.getText().toString().equals("")?"0":them.getText().toString());
+        if(us.getText().toString().equals("") && them.getText().toString().equals("")){
+            turnOn(null);
+            return;
+        }
         stackT1.push(team1);
         stackT2.push(team2);
         if (TextUtils.isEmpty(reg1.getText())) {
@@ -219,14 +193,14 @@ public class MainActivity extends AppCompatActivity {
                 builder.setMessage(R.string.game_over1);
             else
                 builder.setMessage(R.string.game_over2);
-                builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        newGame();
-                    }
-                });
-                builder.show();
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    newGame();
+                }
+            });
+            builder.show();
         }
         turnOn(null);
 
@@ -260,4 +234,81 @@ public class MainActivity extends AppCompatActivity {
         ed.commit();
         Log.d("hello","hi");
     }
+    /*
+        this method reset the score back one play ago, and reset the view new value.
+     */
+    private boolean ScoreBack() {
+        if (stackT1.isEmpty())
+            return false;
+        stackT1.pop();
+        stackT2.pop();
+        if (!stackT1.isEmpty()) {
+            team1 = stackT1.peek();
+            team2 = stackT2.peek();
+        } else {
+            team1 = 0;
+            team2 = 0;
+        }
+        sUs.setText(team1 + "");
+        sThem.setText(team2 + "");
+        int lastIndex1 = reg1.getText().toString().lastIndexOf('\n');
+        int lastIndex2 = reg2.getText().toString().lastIndexOf('\n');
+        if (lastIndex1 == -1) {
+            reg1.setText("");
+            reg2.setText("");
+            return false;
+        }
+        reg1.setText(reg1.getText().toString().substring(0, lastIndex1));
+        reg2.setText(reg2.getText().toString().substring(0, lastIndex2));
+        return false;
+    }
+
+
+    public Integer[] fourRandomNumbers() {
+        LinkedHashSet<Integer> randomNumSet=new LinkedHashSet<>();
+        Random random=new Random(System.nanoTime());
+        while (randomNumSet.size()<4){
+            int i =random.nextInt(4);
+            randomNumSet.add(i);
+            Log.d("inside_Loop",randomNumSet.size() +" / "+i);
+        }
+        Integer i[] =new Integer[randomNumSet.size()];
+        randomNumSet.toArray(i);
+        return i;
+    }
+    public void setTimer(final TextView textView){
+        Timer mTimer = new Timer();
+        mTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (second % 59 == 0 && second != 0) {
+                    second = 0;
+                    minute++;
+                } else {
+                    second++;
+                }
+
+                String mSecond = second + "";
+                String mMinute = minute + "";
+                if (mSecond.length() == 1) {
+                    mSecond = "0" + mSecond;
+                }
+
+                if (mMinute.length() == 1) {
+                    mMinute = "0" + mMinute;
+                }
+                final String finalMMinute = mMinute;
+                final String finalMSecond = mSecond;
+                textView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        textView.setText(finalMMinute + ":" + finalMSecond);
+                    }
+                });
+            }
+        }, 1000, 1000);
+
+    }
 }
+
+
