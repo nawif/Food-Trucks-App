@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.mohsen.balootcalc.MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="@drawable/ic_top"
+            android:onClick="turnOn"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <custom.TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="0"
+                    android:id="@+id/sThem"
+                    android:textColor="#fff"
+                    android:textSize="50sp" />
+
+                <custom.TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center"
+                    android:layout_marginBottom="20dp"
+                    android:text="لهم"
+                    android:textColor="#fff"
+                    android:textSize="25sp" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <custom.TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="0"
+                    android:id="@+id/sUs"
+                    android:textColor="#fff"
+                    android:textSize="50sp" />
+
+                <custom.TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center"
+                    android:layout_marginBottom="20dp"
+                    android:text="لنا"
+                    android:textColor="#fff"
+                    android:textSize="25sp" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:paddingBottom="20dp"
+                android:layout_marginTop="10dp">
+                <custom.TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#3b3b3b"
+                    android:id="@+id/reg2"
+                    android:gravity="center_horizontal"
+                    android:textSize="17sp"
+                    android:layout_weight="1"/>
+                <custom.TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#3b3b3b"
+                    android:id="@+id/reg1"
+                    android:gravity="center_horizontal"
+                    android:textSize="17sp"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <custom.EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:hint="لهم"
+                    android:id="@+id/them"
+                    android:textSize="20sp"
+                    android:inputType="number"
+                    android:gravity="center"/>
+                <custom.EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:hint="لنا"
+                    android:id="@+id/us"
+                    android:textSize="20sp"
+                    android:inputType="number"
+                    android:gravity="center"/>
+            </LinearLayout>
+        </FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#ff0000"
+            android:orientation="horizontal"
+            android:visibility="gone"></LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:alpha="0.02"
+            android:background="#000" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="70dp"
+        android:id="@+id/arrow"
+        android:src="@drawable/ic_arrow_upward_white_24dp"
+        android:alpha="0.7"
+        />
+
+    <ImageButton
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="right|top"
+        android:layout_margin="20dp"
+        android:id="@+id/more"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_more_vert_white_24dp" />
+    <custom.TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|top"
+        android:text="00:00"
+        android:textColor="#fff"
+        android:layout_margin="20dp"
+        android:id="@+id/timer"
+        />
+    <Button
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:onClick="register"
+        android:id="@+id/register"
+        android:background="@drawable/register_btn"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="15dp"/>
+</FrameLayout>
